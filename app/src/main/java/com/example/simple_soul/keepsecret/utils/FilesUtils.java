@@ -31,6 +31,13 @@ public class FilesUtils
     public static final String FILE_INFO_NUM_SONFILES = "fSonFiles";
     public static final String FILE_INFO_PATH = "fPath";
 
+    public CallBackLockNum callback;
+
+    public FilesUtils(CallBackLockNum callback)
+    {
+        this.callback = callback;
+    }
+
     /**
      * 获取文件path文件夹下的文件列表
      *
@@ -508,7 +515,7 @@ public class FilesUtils
      *
      * @param file 需要加密的file文件，可以是文件或文件夹
      */
-    public static void lock(Context context, String safe, File file)
+    public void lock(Context context, String safe, File file)
     {
         String path = file.getParent();
         if(file.isDirectory())
@@ -524,10 +531,11 @@ public class FilesUtils
             String newName = path+"\\"+getRandomString()+".ks";
             PreUtils.setString(context, safe, newName, oldName);
             file.renameTo(new File(newName));
+            callback.complete();
         }
     }
 
-    public static void unlock(Context context, String safe, File file)
+    public void unlock(Context context, String safe, File file)
     {
         if(file.isDirectory())
         {
@@ -540,6 +548,12 @@ public class FilesUtils
         {
             String oldName = PreUtils.getString(context, safe, file.getAbsolutePath(), file.getAbsolutePath());
             file.renameTo(new File(oldName));
+            callback.complete();
         }
+    }
+
+    interface CallBackLockNum
+    {
+        public void complete();
     }
 }

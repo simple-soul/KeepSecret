@@ -69,7 +69,7 @@ public class MainActivity extends FragmentActivity implements BackFragment.BackI
         menu = (ImageView) findViewById(R.id.title_image_menu);
         setting = (ImageView) findViewById(R.id.title_image_setting);
         reSideMenu = new ResideMenu(this);
-
+        //ResideMenu在5.0以上适配有问题，需要修改ResideMenu的fitSystemWindows方法
         reSideMenu.setBackground(R.drawable.menu_background);
         reSideMenu.setSwipeDirectionDisable(ResideMenu.DIRECTION_RIGHT);
         reSideMenu.setScaleValue(0.7f);

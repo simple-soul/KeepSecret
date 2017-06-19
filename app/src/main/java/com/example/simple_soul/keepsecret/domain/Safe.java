@@ -19,6 +19,8 @@ public class Safe
     private Date time = new Date();
     @DatabaseField(columnName = "isLock")
     private boolean isLock = false;
+    @DatabaseField(columnName = "isDelete")
+    private boolean isDelete = false;
 
     public Safe(String name)
     {
@@ -59,5 +61,15 @@ public class Safe
     public void setLock(boolean lock)
     {
         isLock = lock;
+    }
+
+    public boolean isDelete()
+    {
+        return isDelete;
+    }
+
+    public void setDelete(boolean delete)
+    {
+        isDelete = delete;
     }
 }
