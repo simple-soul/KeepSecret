@@ -513,42 +513,56 @@ public class FilesUtils
     /**
      * 一级加密，修改名字和后缀名
      *
-     * @param file 需要加密的file文件，可以是文件或文件夹
+     * @param files 需要加密的file文件，可以是文件或文件夹
      */
-    public void lock(Context context, String safe, File file)
+    public void lock(Context context, String safe, List<File> files)
     {
-        String path = file.getParent();
-        if(file.isDirectory())
+        for (int i = 0; i < files.size(); i++)
         {
-            for(File item:file.listFiles())
+            File file = files.get(i);
+            String path = file.getParent();
+            if(file.isDirectory())
             {
-                lock(context, safe, item);
+                for(File item:file.listFiles())
+                {
+                    List<File> fs = new ArrayList<>();
+                    fs.add(item);
+                    lock(context, safe, fs);
+                }
+            }
+            else
+            {
+                String oldName = file.getAbsolutePath();
+                String newName = path+"\\"+getRandomString()+".ks";
+                PreUtils.setString(context, safe, newName, oldName);
+                file.renameTo(new File(newName));
+                callback.complete();
             }
         }
-        else
-        {
-            String oldName = file.getAbsolutePath();
-            String newName = path+"\\"+getRandomString()+".ks";
-            PreUtils.setString(context, safe, newName, oldName);
-            file.renameTo(new File(newName));
-            callback.complete();
-        }
+
     }
 
-    public void unlock(Context context, String safe, File file)
+    public void unlock(Context context, String safe, List<File> files)
     {
-        if(file.isDirectory())
+        for (int i = 0; i < files.size(); i++)
         {
-            for(File item:file.listFiles())
+            File file = files.get(i);
+            if (file.isDirectory())
             {
-                unlock(context, safe, item);
+                for (File item : file.listFiles())
+                {
+                    List<File> fs = new ArrayList<>();
+                    fs.add(item);
+                    unlock(context, safe, fs);
+                }
             }
-        }
-        else
-        {
-            String oldName = PreUtils.getString(context, safe, file.getAbsolutePath(), file.getAbsolutePath());
-            file.renameTo(new File(oldName));
-            callback.complete();
+            else
+            {
+                String oldName = PreUtils.getString(context, safe, file.getAbsolutePath(),
+                        file.getAbsolutePath());
+                file.renameTo(new File(oldName));
+                callback.complete();
+            }
         }
     }
 

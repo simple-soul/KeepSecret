@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.simple_soul.keepsecret.R;
 import com.example.simple_soul.keepsecret.adapter.FileListAdapter;
@@ -216,7 +217,7 @@ public class FileFragment extends BackFragment implements AdapterView.OnItemClic
             case R.id.file_btn_lock:
                 if(checkList.size() == 0)
                 {
-                    Log.i("main", "请至少选择一个文件");
+                    Toast.makeText(mActivity, "请至少选择一个文件", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
